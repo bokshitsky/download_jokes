@@ -1,0 +1,57 @@
+.project
+.pydevproject
+.settings
+*.iml
+.idea/
+.remote-sync.json
+.vscode
+
+# Python
+*.py[co]
+
+# Build
+/build
+*.egg-info/
+.eggs/
+/cover
+/.coverage
+/debian/hh-logic/
+/debian/hh-logic.*
+!/debian/hh-logic.init
+debian/files
+debian/debhelper-build-stamp
+.pytest_cache/
+coverage.xml
+report.xml
+
+# Mac OS X junk
+.AppleDouble
+.DS_Store
+Icon?
+.Spotlight-V100
+.Trashes
+
+# Windows junk
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Subprojects
+/tornado
+/frontik
+/hh
+/stubs
+/hhsession
+/hhtranslations2client
+
+# Configs
+/config/*.cfg
+frontik_test.log
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+.installed
