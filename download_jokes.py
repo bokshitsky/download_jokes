@@ -22,17 +22,14 @@ class Crawler:
 
     async def save_jokes(self):
         jokes = await self.jokes_fetcher()
-        for joke in jokes:
-            self.db.save_joke(joke)
+        if jokes:
+            for joke in jokes:
+                self.db.save_joke(joke)
 
-    async def start(self, lable, sleep_time_provider: Callable[[], float]):
-        index = 1
+    async def start(self, sleep_time_provider: Callable[[], float]):
         while True:
-            print(f'start {lable} {index}')
             await self.save_jokes()
-            print(f'end {lable} {index}')
             await asyncio.sleep(sleep_time_provider())
-            index += 1
 
 
 def saves_to_db_crawler_factory(db):
@@ -137,18 +134,29 @@ def castlots_fetcher(type, url_part, with_hid):
 
 
 if __name__ == '__main__':
-    engine = create_engine(f'sqlite:////Users/boksh/jokes_temp.db')
+    engine = create_engine(f'sqlite:////Users/boksh/jokes.db')
     Jokes.create(engine, True)
     crawlers = saves_to_db_crawler_factory(JokesDb(engine))
     loop = asyncio.get_event_loop()
 
-    anekdotru_random = itertools.cycle(('http://www.anekdot.ru/random/anekdot',))
+    anekdotru_random_anekdot = itertools.cycle(('http://www.anekdot.ru/random/anekdot',))
+    anekdotru_random_aphorism = itertools.cycle(('http://www.anekdot.ru/random/aphorism',))
+    rzhunemogu_all = rzhunemogu_fetcher(1, 2, 3, 4, 5, 6, 8, 11, 12, 13, 14, 15, 16, 18)
 
     loop.run_until_complete(asyncio.gather(
-        # crawlers(rzhunemogu_fetcher(1, 2, 3, 4, 5, 6, 8, 11, 12, 13, 14, 15, 16, 18)).start('first',
-        #                                                                                     lambda: uniform(0.3, 2)),
-        # crawlers(rzhunemogu_fetcher(1, 2, 3, 4, 5, 6, 8, 11, 12, 13, 14, 15, 16, 18)).start('second',
-        #                                                                                     lambda: uniform(0.3, 2)),
-        # crawlers(anekdotru_fetcher(anekdotru_random, 1)).start('third', lambda: uniform(0.3, 2)),
-        crawlers(castlots_fetcher(1, 'generator-anekdotov-online', False)).start('third', lambda: uniform(0.3, 2))
+        crawlers(rzhunemogu_all).start(lambda: uniform(0.3, 2)),
+        crawlers(rzhunemogu_all).start(lambda: uniform(0.3, 2)),
+        crawlers(rzhunemogu_all).start(lambda: uniform(0.3, 2)),
+        crawlers(rzhunemogu_all).start(lambda: uniform(0.3, 2)),
+
+
+        crawlers(anekdotru_fetcher(anekdotru_random_anekdot, 1)).start(lambda: uniform(0.3, 1.5)),
+        crawlers(anekdotru_fetcher(anekdotru_random_aphorism, 135)).start(lambda: uniform(0.3, 1.5)),
+
+        crawlers(castlots_fetcher(1, 'generator-anekdotov-online', False)).start(lambda: uniform(0.3, 2)),
+        crawlers(castlots_fetcher(1, 'generator-anekdotov-online', False)).start(lambda: uniform(0.3, 2)),
+        # crawlers(castlots_fetcher(131, 'generator-komplimentov-devushke', False)).start(lambda: uniform(0.3, 2)),
+        # crawlers(castlots_fetcher(132, 'generator-komplimentov-muzhchine', False)).start(lambda: uniform(0.3, 2)),
+        # crawlers(castlots_fetcher(133, 'generator-interesnykh-faktov', True)).start(lambda: uniform(0.3, 2)),
+        # crawlers(castlots_fetcher(134, 'generator-citat-online', False)).start(lambda: uniform(0.3, 2)),
     ))
